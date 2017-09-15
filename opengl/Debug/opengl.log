@@ -1,0 +1,21 @@
+﻿  Main.cpp
+c:\users\yasha\documents\visual studio 2015\projects\assignment1\opengl\shaderh.h(67): warning C4101: 'infoLog': unreferenced local variable
+c:\users\yasha\documents\visual studio 2015\projects\assignment1\opengl\shaderh.h(66): warning C4101: 'success': unreferenced local variable
+c:\users\yasha\documents\visual studio 2015\projects\assignment1\opengl\main.cpp(130): warning C4305: 'initializing': truncation from 'double' to 'float'
+c:\users\yasha\documents\visual studio 2015\projects\assignment1\opengl\main.cpp(134): warning C4244: '=': conversion from 'double' to 'GLfloat', possible loss of data
+glfw3.lib(context.obj) : warning LNK4099: PDB 'glfw.pdb' was not found with 'glfw3.lib(context.obj)' or at 'C:\Users\yasha\Documents\Visual Studio 2015\Projects\Assignment1\Debug\glfw.pdb'; linking object as if no debug info
+glfw3.lib(init.obj) : warning LNK4099: PDB 'glfw.pdb' was not found with 'glfw3.lib(init.obj)' or at 'C:\Users\yasha\Documents\Visual Studio 2015\Projects\Assignment1\Debug\glfw.pdb'; linking object as if no debug info
+glfw3.lib(input.obj) : warning LNK4099: PDB 'glfw.pdb' was not found with 'glfw3.lib(input.obj)' or at 'C:\Users\yasha\Documents\Visual Studio 2015\Projects\Assignment1\Debug\glfw.pdb'; linking object as if no debug info
+glfw3.lib(monitor.obj) : warning LNK4099: PDB 'glfw.pdb' was not found with 'glfw3.lib(monitor.obj)' or at 'C:\Users\yasha\Documents\Visual Studio 2015\Projects\Assignment1\Debug\glfw.pdb'; linking object as if no debug info
+glfw3.lib(vulkan.obj) : warning LNK4099: PDB 'glfw.pdb' was not found with 'glfw3.lib(vulkan.obj)' or at 'C:\Users\yasha\Documents\Visual Studio 2015\Projects\Assignment1\Debug\glfw.pdb'; linking object as if no debug info
+glfw3.lib(window.obj) : warning LNK4099: PDB 'glfw.pdb' was not found with 'glfw3.lib(window.obj)' or at 'C:\Users\yasha\Documents\Visual Studio 2015\Projects\Assignment1\Debug\glfw.pdb'; linking object as if no debug info
+glfw3.lib(win32_init.obj) : warning LNK4099: PDB 'glfw.pdb' was not found with 'glfw3.lib(win32_init.obj)' or at 'C:\Users\yasha\Documents\Visual Studio 2015\Projects\Assignment1\Debug\glfw.pdb'; linking object as if no debug info
+glfw3.lib(win32_joystick.obj) : warning LNK4099: PDB 'glfw.pdb' was not found with 'glfw3.lib(win32_joystick.obj)' or at 'C:\Users\yasha\Documents\Visual Studio 2015\Projects\Assignment1\Debug\glfw.pdb'; linking object as if no debug info
+glfw3.lib(win32_monitor.obj) : warning LNK4099: PDB 'glfw.pdb' was not found with 'glfw3.lib(win32_monitor.obj)' or at 'C:\Users\yasha\Documents\Visual Studio 2015\Projects\Assignment1\Debug\glfw.pdb'; linking object as if no debug info
+glfw3.lib(win32_time.obj) : warning LNK4099: PDB 'glfw.pdb' was not found with 'glfw3.lib(win32_time.obj)' or at 'C:\Users\yasha\Documents\Visual Studio 2015\Projects\Assignment1\Debug\glfw.pdb'; linking object as if no debug info
+glfw3.lib(win32_tls.obj) : warning LNK4099: PDB 'glfw.pdb' was not found with 'glfw3.lib(win32_tls.obj)' or at 'C:\Users\yasha\Documents\Visual Studio 2015\Projects\Assignment1\Debug\glfw.pdb'; linking object as if no debug info
+glfw3.lib(win32_window.obj) : warning LNK4099: PDB 'glfw.pdb' was not found with 'glfw3.lib(win32_window.obj)' or at 'C:\Users\yasha\Documents\Visual Studio 2015\Projects\Assignment1\Debug\glfw.pdb'; linking object as if no debug info
+glfw3.lib(wgl_context.obj) : warning LNK4099: PDB 'glfw.pdb' was not found with 'glfw3.lib(wgl_context.obj)' or at 'C:\Users\yasha\Documents\Visual Studio 2015\Projects\Assignment1\Debug\glfw.pdb'; linking object as if no debug info
+glfw3.lib(egl_context.obj) : warning LNK4099: PDB 'glfw.pdb' was not found with 'glfw3.lib(egl_context.obj)' or at 'C:\Users\yasha\Documents\Visual Studio 2015\Projects\Assignment1\Debug\glfw.pdb'; linking object as if no debug info
+  opengl.vcxproj -> C:\Users\yasha\Documents\Visual Studio 2015\Projects\Assignment1\Debug\opengl.exe
+  opengl.vcxproj -> C:\Users\yasha\Documents\Visual Studio 2015\Projects\Assignment1\Debug\opengl.pdb (Full PDB)
