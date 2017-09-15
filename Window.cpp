@@ -7,28 +7,23 @@ using namespace std;
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+#define _USE_MATH_DEFINES
+#include<math.h>
+
 
 #include "ShaderH.h"
 
-
+glm::mat4 project;
 
 glm::mat4 transform;
-glm::mat4 model;
-glm::mat4 project;
-glm::mat4 view;
-
 int height = 600;
 int width = 800;
 float resoultion = (float)width / (float)height;
 
 
+unsigned int VBO[4];
+unsigned int VAO[4], EBO;
 
-glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 4.0f);
-glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -4.0f);
-glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
-
-float deltaTime = 0.0f;
-float lastFrame = 0.0f;
 
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
@@ -37,74 +32,13 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 }
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
-	float cameraSpeed = 2.5 * deltaTime;
-
 	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
 		glfwSetWindowShouldClose(window, true);
-
-	if (key == GLFW_KEY_1 && action == GLFW_PRESS)
-		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-
-	if (key == GLFW_KEY_2 && action == GLFW_PRESS)
-		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-
-	if (key == GLFW_KEY_3 && action == GLFW_PRESS)
-		glPolygonMode(GL_FRONT_AND_BACK, GL_POINT);
-	
-	if (key == GLFW_KEY_UP && action == GLFW_PRESS)
-		transform = glm::translate(transform, glm::vec3(0.0f, 0.05f, 0.0f));
-	
-	if (key == GLFW_KEY_DOWN && action == GLFW_PRESS)
-		transform = glm::translate(transform, glm::vec3(0.0f, -0.05f, 0.0f));
-	
-	if (key == GLFW_KEY_RIGHT && action == GLFW_PRESS)
-		transform = glm::translate(transform, glm::vec3(0.05f, 0.0f, 0.0f));
-	
-	if (key == GLFW_KEY_LEFT && action == GLFW_PRESS)
-		transform = glm::translate(transform, glm::vec3(-0.05f, 0.0f, 0.0f));
-	
-	if (key == GLFW_KEY_Q && action == GLFW_PRESS)
-		transform = glm::rotate(transform, (float)glm::radians(50.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-	
-	if (key == GLFW_KEY_E && action == GLFW_PRESS)
-		transform = glm::rotate(transform, (float)glm::radians(50.0f), glm::vec3(0.0f, -1.0f, 0.0f));
-	
-	if (key == GLFW_KEY_Z && action == GLFW_PRESS)
-		transform = glm::scale(transform, glm::vec3(0.9f,0.9f,0.9f));
-	
-	if (key == GLFW_KEY_X && action == GLFW_PRESS)
-		transform = glm::scale(transform, glm::vec3(1.1f,1.1f,1.1f));
-	
-	if(key== GLFW_KEY_O && action ==GLFW_PRESS)
-	project =	glm::ortho(-4.0f,4.0f,-4.0f,4.0f,0.1f,100.0f);
-	
-	if (key == GLFW_KEY_P && action == GLFW_PRESS)
-    project = glm::perspective(glm::radians(100.0f), resoultion, 0.1f, 100.0f);
-
-	if (key == GLFW_KEY_W && action == GLFW_PRESS)
-	
-		cameraPos += cameraSpeed * cameraFront;
-	
-	
-	if (key == GLFW_KEY_S && action == GLFW_PRESS)
-	
-		cameraPos -= cameraSpeed * cameraFront;
-	
-	
-	if (key == GLFW_KEY_A && action == GLFW_PRESS)
-	
-		cameraPos -= glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
-		
-	
-	if (key == GLFW_KEY_D && action == GLFW_PRESS)
-	
-		cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
-		
-
-
-
-
 }
+
+
+	
+
 int main()
 {	
 	
@@ -133,109 +67,165 @@ int main()
 		return -1;
 	}
 
-	glEnable(GL_DEPTH_TEST);
+	Shader Body("vertexShader.glsl", "fsBody.glsl");
+	Shader Head("vertexShader.glsl", "fsHead.glsl");
+	Shader Limb("vertexShader.glsl", "fsLimb.glsl");
+	Shader Arm("vsArm2.glsl", "fsArm2.glsl");
+	Shader Arm3("vertexShader.glsl", "fsLimb.glsl");
 
-	Shader ourShader("vertexShader.glsl", "fragmentShader.glsl");
+	glGenVertexArrays(4, VAO);
+	glGenBuffers(4, VBO);
+	glGenBuffers(1, &EBO);
 
-	
+	float BodyVertex[] = { 0, 0, 0,
+						-5, 0, 0,
+						-5, -6, 0,
+						0, -6, 0
+						};
+	GLuint BodyIndex[] = { 0,1,2,
+						   0,3,2
+						  };
 
-			//Vertices
-				float vertices[] = {
-				0.5f,  0.5f, 0.5f, 1.0f,0.0f,0.0f, //0
-				0.5f, -0.5f, 0.5f, 0.0f,1.0f,1.0f, //1
-			   -0.5f, -0.5f, 0.5f, 0.0f,0.0f,1.0f,  //2
-			   -0.5f,  0.5f, 0.5f, 1.0f,0.0f,0.0f, //3
-				0.5f,  0.5f, -0.5f,0.0f,1.0f,0.0f,  //4
-				0.5f, -0.5f, -0.5f,0.0f,0.0f,1.f, //5
-			   -0.5f, -0.5f, -0.5f,1.0f,0.0f,0.0f, //6
-			   -0.5f, 0.5f, -0.5f, 0.0f, 1.0f,0.0f  //7
+	GLfloat Arm1[] =
+	{  -5, 0, 0,
+		-6, 1, 0,
+		-8, -5, 0,
+		-7, -6, 0
+	};
 
-			};
-			//Indices
-			GLuint indices[] = {  
-				0, 1, 2, //1
-				0, 2, 3, //2 
-				0 ,3, 7, //3
-				0, 4, 7, //4
-				3, 7, 2, //5
-				7, 2, 6, //6
-				1, 6 ,2 , //7
-				1 ,6, 5, //8
-				1 ,0 ,4, //9
-				1 ,4 ,5, //10
-				4 , 5, 6, //11
-				4, 6 ,7, //12
-				
-
-			};
-
-			
-
-			
-			
-			transform = glm::translate(transform, glm::vec3(0.0f, 0.0f, -3.0f));
-			unsigned int VBO, VAO, EBO;
-			glGenVertexArrays(1, &VAO);
-			glGenBuffers(1, &VBO);
-			glGenBuffers(1, &EBO);
-
-			glBindVertexArray(VAO);
-
-			
-			glBindBuffer(GL_ARRAY_BUFFER, VBO);
-			glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+	GLfloat Arm2[] =
+	{
+		0, 0, 0,
+		1, 1, 0,
+		3, -5, 0,
+		2, -6, 0
+	};
 
 
 
-			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-			glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+	float LimbVertex[] = { -5, -6, 0,
+		-4, -6, 0,
+		-4, -9, 0,
+		-5, -9, 0,
+		0, -6, 0,
+		-1, -6, 0,
+		-1, -9, 0,
+		0, -9, 0
+	};
+	GLuint LimbIndex[] = { 0,1,2,
+		0,3,2,
+		4,5,6,
+		4,7,6 };
 
-			//Position Attribute
-			glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
-			glEnableVertexAttribArray(0);
-			//color Attribute
-			glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
-			glEnableVertexAttribArray(1);
+	float Head1[36];
+	Head1[0] = -2.5;
+	Head1[1] = 2;
+	Head1[2] = 0;
 
-			glBindBuffer(GL_ARRAY_BUFFER, 0);
-			glBindVertexArray(0);
+	int j = 1;
+	float twoPI = 2 * M_PI;
+
+	for (int i = 3; i<34; ++i)
+	{
+		Head1[i++] = -2.5 + 2 * cos(j*twoPI / 10);
+		Head1[i++] = 2 + 2 * sin(j*twoPI / 10);
+		Head1[i] = 0;
+		++j;
+	}
+	glBindVertexArray(VAO[0]);
+    glBindBuffer(GL_ARRAY_BUFFER, VBO[0]);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(BodyVertex), BodyVertex, GL_STATIC_DRAW);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(BodyIndex), BodyIndex, GL_STATIC_DRAW);
+	//Position Attribute
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+	glEnableVertexAttribArray(0);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+
+	glBindVertexArray(VAO[1]);
+    glBindBuffer(GL_ARRAY_BUFFER, VBO[1]);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(LimbVertex), LimbVertex, GL_STATIC_DRAW);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(LimbIndex), LimbIndex, GL_STATIC_DRAW);
+	//Position Attribute
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+	glEnableVertexAttribArray(0);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindVertexArray(0);
+
+
+	glBindVertexArray(VAO[2]);
+	glBindBuffer(GL_ARRAY_BUFFER, VBO[2]);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(Head1), Head1, GL_STATIC_DRAW);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+	glEnableVertexAttribArray(0);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+	glBindVertexArray(VAO[3]);
+	glBindBuffer(GL_ARRAY_BUFFER, VBO[3]);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(Arm1), Arm1, GL_STATIC_DRAW);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+	glEnableVertexAttribArray(0);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+    /*glBindVertexArray(VAO[4]);
+	glBindBuffer(GL_ARRAY_BUFFER, VBO[4]);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(Arm2), Arm2, GL_STATIC_DRAW);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+	glEnableVertexAttribArray(0);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);*/
+
+
+	glBindVertexArray(0);
 
 	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
-	project=glm::ortho(-4.0f, 4.0f, -4.0f, 4.0f, 0.1f, 100.0f);
-	view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
+	project = glm::ortho(-10.0f, 5.0f, -10.0f, 5.0f, 0.0f, 100.0f);
 	while (!glfwWindowShouldClose(window))
 	{
-		float currentFrame = glfwGetTime();
-		deltaTime = currentFrame - lastFrame;
-		lastFrame = currentFrame;
-
 		glfwSetKeyCallback(window, key_callback);
-		glClearColor(0.09f, 0.2f, 0.5f, 1.0f);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-		
-
-		ourShader.use();
-		view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
-		ourShader.setMat4("view", view);
-		ourShader.setMat4("projection", project);
-		ourShader.setMat4("model", model);
-		ourShader.setMat4("transform", transform);
+		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+		glClear(GL_COLOR_BUFFER_BIT );
 
 
-		glBindVertexArray(VAO);
+		transform = glm::rotate(transform, glm::radians(5.0f), glm::vec3(0, 0, 1));
+
+		Body.use();
+		Body.setMat4("projection", project);
+		glBindVertexArray(VAO[0]);
+        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+
+		Limb.use();
+		Limb.setMat4("projection", project);
+		glBindVertexArray(VAO[1]);
+		glDrawElements(GL_TRIANGLES, 12, GL_UNSIGNED_INT, 0);
+
+		Arm3.use();
+		Arm3.setMat4("projection", project);
+		glBindVertexArray(VAO[3]);
+		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+
+		Head.use();
+		Head.setMat4("projection", project);
+		glBindVertexArray(VAO[2]);
+		glDrawArrays(GL_TRIANGLE_FAN, 0, 12);
+
+		/*Arm.use();
+		Arm.setMat4("projection", project);
+		Arm.setMat4("transform", transform);
+
+		glBindVertexArray(VAO[4]);
+		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);*/
 	
-
-
-		glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
-		
-
+	
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 	}
 
-	glDeleteVertexArrays(1, &VAO);
-	glDeleteBuffers(1, &VBO);
+	glDeleteVertexArrays(4, VAO);
+	glDeleteBuffers(4, VBO);
 	glDeleteBuffers(1, &EBO);
 	glfwTerminate();
 	return 0;
